@@ -3,17 +3,16 @@
 // DELETE /items/:itemId — deletes an item by _id
 
 const router = require("express").Router();
+const {
+  getItems,
+  createItem,
+  deleteItem,
+} = require("../controllers/clothingItems");
 
-router.get("/", () => {
-  console.log("GET items");
-});
+router.get("/", getItems);
 
-router.get("/:itemId", () => {
-  console.log("GET items/:itemId");
-});
+router.delete("/:itemId", deleteItem);
 
-router.post("/", () => {
-  console.log("POST items");
-});
+router.post("/", createItem);
 
 module.exports = router;
