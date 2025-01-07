@@ -5,7 +5,6 @@ const {
   BAD_REQUEST_STATUS_CODE,
   NOT_FOUND_STATUS_CODE,
   INTERNAL_SERVER_ERROR_STATUS_CODE,
-  NO_CONTENT_STATUS_CODE,
 } = require("../utils/errors");
 
 // GET /users
@@ -31,10 +30,10 @@ const createUser = (req, res) => {
         return res
           .status(BAD_REQUEST_STATUS_CODE)
           .send({ message: err.message });
-      } else
-        return res
-          .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-          .send({ message: err.message });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+        .send({ message: err.message });
     });
   console.log(name, avatar);
 };
@@ -53,10 +52,10 @@ const getUser = (req, res) => {
         return res
           .status(BAD_REQUEST_STATUS_CODE)
           .send({ message: err.message });
-      } else
-        return res
-          .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-          .send({ message: err.message });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+        .send({ message: err.message });
     });
 };
 

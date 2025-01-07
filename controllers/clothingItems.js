@@ -5,7 +5,6 @@ const {
   BAD_REQUEST_STATUS_CODE,
   NOT_FOUND_STATUS_CODE,
   INTERNAL_SERVER_ERROR_STATUS_CODE,
-  NO_CONTENT_STATUS_CODE,
 } = require("../utils/errors");
 
 //  GET /items returns all clothing items
@@ -33,10 +32,10 @@ const createItem = (req, res) => {
         return res
           .status(BAD_REQUEST_STATUS_CODE)
           .send({ message: err.message });
-      } else
-        return res
-          .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-          .send({ message: err.message });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+        .send({ message: err.message });
     });
   console.log(name, weather, imageUrl);
 };
@@ -52,7 +51,7 @@ const deleteItem = (req, res) => {
           .send({ message: "Item not found" });
       }
       console.log("Item Deleted");
-      res.status(SUCCESS_STATUS_CODE).send(deletedItem);
+      return res.status(SUCCESS_STATUS_CODE).send(deletedItem);
     })
     .catch((err) => {
       console.error(err);
@@ -60,10 +59,10 @@ const deleteItem = (req, res) => {
         return res
           .status(BAD_REQUEST_STATUS_CODE)
           .send({ message: err.message });
-      } else
-        return res
-          .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-          .send({ message: err.message });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+        .send({ message: err.message });
     });
 };
 
@@ -86,10 +85,10 @@ const likeItem = (req, res) =>
         return res
           .status(BAD_REQUEST_STATUS_CODE)
           .send({ message: err.message });
-      } else
-        return res
-          .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-          .send({ message: err.message });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+        .send({ message: err.message });
     });
 
 // DELETE /items/:itemId/likes - unlike an item
@@ -105,7 +104,7 @@ const dislikeItem = (req, res) =>
           .status(NOT_FOUND_STATUS_CODE)
           .send({ message: "Item not found" });
       }
-      res.status(SUCCESS_STATUS_CODE).send(updatedItem);
+      return res.status(SUCCESS_STATUS_CODE).send(updatedItem);
     })
     .catch((err) => {
       console.error(err);
@@ -115,10 +114,10 @@ const dislikeItem = (req, res) =>
         return res
           .status(BAD_REQUEST_STATUS_CODE)
           .send({ message: err.message });
-      } else
-        return res
-          .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-          .send({ message: err.message });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+        .send({ message: err.message });
     });
 
 module.exports = { getItems, createItem, deleteItem, likeItem, dislikeItem };
