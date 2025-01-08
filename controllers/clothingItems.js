@@ -1,6 +1,5 @@
 const ClothingItem = require("../models/clothingItem");
 const {
-  SUCCESS_STATUS_CODE,
   SUCCESS_CREATED_STATUS_CODE,
   BAD_REQUEST_STATUS_CODE,
   NOT_FOUND_STATUS_CODE,
@@ -10,10 +9,12 @@ const {
 //  GET /items returns all clothing items
 const getItems = (req, res) => {
   ClothingItem.find({})
-    .then((items) => res.status(SUCCESS_STATUS_CODE).send(items))
+    .then((items) => res.send(items))
     .catch((err) => {
       console.error(err);
-      return res.status(NOT_FOUND_STATUS_CODE).send({ message: err.message });
+      return res
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -31,11 +32,11 @@ const createItem = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_STATUS_CODE)
-          .send({ message: err.message });
+          .send({ message: "The server does not understand this request" });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
   console.log(name, weather, imageUrl);
 };
@@ -51,18 +52,18 @@ const deleteItem = (req, res) => {
           .send({ message: "Item not found" });
       }
       console.log("Item Deleted");
-      return res.status(SUCCESS_STATUS_CODE).send(deletedItem);
+      return res.send(deletedItem);
     })
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST_STATUS_CODE)
-          .send({ message: err.message });
+          .send({ message: "The server does not understand this request" });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -80,16 +81,18 @@ const likeItem = (req, res) =>
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_STATUS_CODE).send({ message: err.message });
+        return res
+          .status(NOT_FOUND_STATUS_CODE)
+          .send({ message: "Error- cannot be found" });
       }
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST_STATUS_CODE)
-          .send({ message: err.message });
+          .send({ message: "The server does not understand this request" });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
 
 // DELETE /items/:itemId/likes - unlike an item
@@ -105,21 +108,23 @@ const dislikeItem = (req, res) =>
           .status(NOT_FOUND_STATUS_CODE)
           .send({ message: "Item not found" });
       }
-      return res.status(SUCCESS_STATUS_CODE).send(updatedItem);
+      return res.send(updatedItem);
     })
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_STATUS_CODE).send({ message: err.message });
+        return res
+          .status(NOT_FOUND_STATUS_CODE)
+          .send({ message: "Error- cannot be found" });
       }
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST_STATUS_CODE)
-          .send({ message: err.message });
+          .send({ message: "The server does not understand this request" });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
 
 module.exports = { getItems, createItem, deleteItem, likeItem, dislikeItem };
