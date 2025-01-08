@@ -1,6 +1,5 @@
 const User = require("../models/user");
 const {
-  SUCCESS_STATUS_CODE,
   SUCCESS_CREATED_STATUS_CODE,
   BAD_REQUEST_STATUS_CODE,
   NOT_FOUND_STATUS_CODE,
@@ -10,12 +9,12 @@ const {
 // GET /users
 const getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(SUCCESS_STATUS_CODE).send(users))
+    .then((users) => res.send(users))
     .catch((err) => {
       console.error(err);
       return res
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -29,11 +28,11 @@ const createUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_STATUS_CODE)
-          .send({ message: err.message });
+          .send({ message: "The server does not understand this request" });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
   console.log(name, avatar);
 };
@@ -43,20 +42,22 @@ const getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
     .orFail()
-    .then((user) => res.status(SUCCESS_STATUS_CODE).send(user))
+    .then((user) => res.send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_STATUS_CODE).send({ message: err.message });
+        return res
+          .status(NOT_FOUND_STATUS_CODE)
+          .send({ message: "Error- cannot be found" });
       }
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST_STATUS_CODE)
-          .send({ message: err.message });
+          .send({ message: "The server does not understand this request" });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
