@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const {
   SUCCESS_CREATED_STATUS_CODE,
@@ -20,11 +21,28 @@ const getUsers = (req, res) => {
 
 // POST /users
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
-  User.create({ name, avatar })
-    .then((user) => res.status(SUCCESS_CREATED_STATUS_CODE).send(user))
+  const { name, avatar, email, password } = req.body;
+
+  bcrypt
+    .hash(password, 10)
+    .then((hashedPassword) =>
+      User.create({ name, avatar, email, password: hashedPassword })
+    )
+    .then((user) =>
+      res.status(SUCCESS_CREATED_STATUS_CODE).send({
+        _id: user._id,
+        name: user.name,
+        avatar: user.avatar,
+        email: user.email,
+      })
+    )
     .catch((err) => {
       console.error(err);
+      if (err.code === 11000) {
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: `${email} is already in use` });
+      }
       if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_STATUS_CODE)
@@ -34,7 +52,6 @@ const createUser = (req, res) => {
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
         .send({ message: "An error has occurred on the server" });
     });
-  console.log(name, avatar);
 };
 
 // GET /users/:userId
