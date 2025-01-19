@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+    select: false,
   },
 });
 
@@ -35,19 +36,24 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(
   email,
   password
 ) {
-  return this.findOne({ email }) // this — the User model
+  return this.findOne({ email })
+    .select("+password") // this — the User model and selecting hashedpassword
     .then((user) => {
       // not found - rejecting the promise
       if (!user) {
         return Promise.reject(new Error("Incorrect email or password"));
       }
 
-      // found - comparing password vs hashedPassword
+      // found - comparing password vs hashedPassword and then delete password from returned object
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
           return Promise.reject(new Error("Incorrect email or password"));
         }
-        return user;
+        const userObject = user.toObject();
+
+        delete userObject.password;
+
+        return userObject;
       });
     });
 };
