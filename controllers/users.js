@@ -58,8 +58,8 @@ const createUser = (req, res) => {
 };
 
 // GET /users/:userId
-const getUser = (req, res) => {
-  const { userId } = req.params;
+const getCurrentUser = (req, res) => {
+  const { userId } = req.user;
   User.findById(userId)
     .orFail()
     .then((user) => res.send(user))
@@ -104,4 +104,31 @@ const login = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser, login };
+const updateProfile = (req, res) => {
+  const { userId } = req.user;
+  const { name, avatar } = req.body;
+  const opts = { new: true, runValidators: true };
+
+  return User.findByIdAndUpdate({ userId }, { name, avatar }, opts)
+    .then((updatedProfile) => {
+      if (!updatedProfile) {
+        return res
+          .set(NOT_FOUND_STATUS_CODE)
+          .send({ message: "This profile could not be found" });
+      }
+      return res.send(updatedProfile);
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "ValidationError") {
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "The server does not understand this request" });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+        .send({ message: "An error has occurred on the server" });
+    });
+};
+
+module.exports = { getUsers, createUser, getCurrentUser, login, updateProfile };
