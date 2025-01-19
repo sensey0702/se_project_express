@@ -4,6 +4,7 @@ const {
   BAD_REQUEST_STATUS_CODE,
   NOT_FOUND_STATUS_CODE,
   INTERNAL_SERVER_ERROR_STATUS_CODE,
+  UNAUTHORIZED_STATUS_CODE,
 } = require("../utils/errors");
 
 //  GET /items returns all clothing items
@@ -44,15 +45,28 @@ const createItem = (req, res) => {
 // DELETE /items/:itemId deletes an item by _id
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
-  ClothingItem.findByIdAndDelete(itemId)
-    .then((deletedItem) => {
-      if (!deletedItem) {
+  const { userId } = req.user;
+
+  Clothing.Item.findById(itemId)
+    .then((item) => {
+      //find item by ID
+      if (!item) {
         return res
           .status(NOT_FOUND_STATUS_CODE)
           .send({ message: "Item not found" });
       }
-      console.log("Item Deleted");
-      return res.send(deletedItem);
+      // check if the owner of the item and the userId match
+      if (item.owner.toString() !== userId) {
+        return res.status(UNAUTHORIZED_STATUS_CODE).send({
+          message: "You do not have required permission for this action",
+        });
+      }
+
+      //  delete item if owner and userId match
+      return ClothingItem.findByIdAndDelete(itemId).then((deletedItem) => {
+        console.log("Item Deleted");
+        return res.send(deletedItem);
+      });
     })
     .catch((err) => {
       console.error(err);
