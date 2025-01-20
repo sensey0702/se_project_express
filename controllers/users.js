@@ -8,6 +8,7 @@ const {
   NOT_FOUND_STATUS_CODE,
   INTERNAL_SERVER_ERROR_STATUS_CODE,
   UNAUTHORIZED_STATUS_CODE,
+  CONFLICT_STATUS_CODE,
 } = require("../utils/errors");
 
 // GET /users
@@ -22,7 +23,7 @@ const getUsers = (req, res) => {
     });
 };
 
-// POST /users
+// POST /signup
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
@@ -43,7 +44,7 @@ const createUser = (req, res) => {
       console.error(err);
       if (err.code === 11000) {
         return res
-          .status(BAD_REQUEST_STATUS_CODE)
+          .status(CONFLICT_STATUS_CODE)
           .send({ message: `${email} is already in use` });
       }
       if (err.name === "ValidationError") {
@@ -86,18 +87,29 @@ const login = (req, res) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      return res.send({ token });
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.message === "Incorrect email or password") {
         return res
           .status(UNAUTHORIZED_STATUS_CODE)
           .send({ message: "Incorrect email or password" });
       }
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-        expiresIn: "7d",
-      });
-      return res.send(token);
-    })
-    .catch((err) => {
-      console.error(err);
+      if (err.message === "Illegal arguments: string, undefined") {
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "email required" });
+      }
+      if (err.message === "Illegal arguments: undefined, string") {
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "password required" });
+      }
+
       return res
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
         .send({ message: "An error has occurred on the server" });
