@@ -7,7 +7,6 @@ const {
   BAD_REQUEST_STATUS_CODE,
   NOT_FOUND_STATUS_CODE,
   INTERNAL_SERVER_ERROR_STATUS_CODE,
-  UNAUTHORIZED_STATUS_CODE,
   CONFLICT_STATUS_CODE,
 } = require("../utils/errors");
 
@@ -60,8 +59,8 @@ const createUser = (req, res) => {
 
 // GET /users/:userId
 const getCurrentUser = (req, res) => {
-  const { userId } = req.user;
-  User.findById(userId)
+  const { _id } = req.user;
+  User.findById(_id)
     .orFail()
     .then((user) => res.send(user))
     .catch((err) => {
@@ -96,7 +95,7 @@ const login = (req, res) => {
       console.error(err);
       if (err.message === "Incorrect email or password") {
         return res
-          .status(UNAUTHORIZED_STATUS_CODE)
+          .status(BAD_REQUEST_STATUS_CODE)
           .send({ message: "Incorrect email or password" });
       }
       if (err.message === "Illegal arguments: string, undefined") {
@@ -117,11 +116,11 @@ const login = (req, res) => {
 };
 
 const updateProfile = (req, res) => {
-  const { userId } = req.user;
+  const { _id } = req.user;
   const { name, avatar } = req.body;
   const opts = { new: true, runValidators: true };
 
-  return User.findByIdAndUpdate({ userId }, { name, avatar }, opts)
+  return User.findByIdAndUpdate({ _id }, { name, avatar }, opts)
     .then((updatedProfile) => {
       if (!updatedProfile) {
         return res
