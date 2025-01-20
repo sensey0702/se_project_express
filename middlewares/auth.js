@@ -15,18 +15,18 @@ const auth = (req, res, next) => {
     // check if the header exists and starts with 'Bearer '
     return handleAuthError(res);
   }
-  const token = authorization.replace("Bearer ", ""); //remove bearer
+  const token = authorization.replace("Bearer ", "");
   let payload;
 
   try {
-    payload = jwt.verify(token, JWT_SECRET); //verify the token
+    payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     return handleAuthError(res);
   }
 
   req.user = payload; // adding the payload to the Request object
 
-  next(); // passing the request further along
+  return next(); // passing the request further along
 };
 
 module.exports = auth;

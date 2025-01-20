@@ -4,7 +4,6 @@ const {
   BAD_REQUEST_STATUS_CODE,
   NOT_FOUND_STATUS_CODE,
   INTERNAL_SERVER_ERROR_STATUS_CODE,
-  UNAUTHORIZED_STATUS_CODE,
   FORBIDDEN_STATUS_CODE,
 } = require("../utils/errors");
 
@@ -50,7 +49,6 @@ const deleteItem = (req, res) => {
 
   ClothingItem.findById(itemId)
     .then((item) => {
-      //find item by ID
       if (!item) {
         return res
           .status(NOT_FOUND_STATUS_CODE)
