@@ -8,21 +8,9 @@ const {
   NOT_FOUND_STATUS_CODE,
   INTERNAL_SERVER_ERROR_STATUS_CODE,
   CONFLICT_STATUS_CODE,
+  UNAUTHORIZED_STATUS_CODE,
 } = require("../utils/errors");
 
-// GET /users
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: "An error has occurred on the server" });
-    });
-};
-
-// POST /signup
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
@@ -57,7 +45,6 @@ const createUser = (req, res) => {
     });
 };
 
-// GET /users/:userId
 const getCurrentUser = (req, res) => {
   const { _id } = req.user;
   User.findById(_id)
@@ -84,6 +71,12 @@ const getCurrentUser = (req, res) => {
 const login = (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res
+      .status(BAD_REQUEST_STATUS_CODE)
+      .send({ message: "The password and email fields are required" });
+  }
+
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -95,18 +88,8 @@ const login = (req, res) => {
       console.error(err);
       if (err.message === "Incorrect email or password") {
         return res
-          .status(BAD_REQUEST_STATUS_CODE)
+          .status(UNAUTHORIZED_STATUS_CODE)
           .send({ message: "Incorrect email or password" });
-      }
-      if (err.message === "Illegal arguments: string, undefined") {
-        return res
-          .status(BAD_REQUEST_STATUS_CODE)
-          .send({ message: "email required" });
-      }
-      if (err.message === "Illegal arguments: undefined, string") {
-        return res
-          .status(BAD_REQUEST_STATUS_CODE)
-          .send({ message: "password required" });
       }
 
       return res
@@ -142,4 +125,4 @@ const updateProfile = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getCurrentUser, login, updateProfile };
+module.exports = { createUser, getCurrentUser, login, updateProfile };
