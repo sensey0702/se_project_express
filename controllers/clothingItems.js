@@ -25,7 +25,6 @@ const createItem = (req, res) => {
   const owner = req.user._id;
   ClothingItem.create({ name, weather, imageUrl, owner })
     .then((item) => {
-      console.log(item);
       res.status(SUCCESS_CREATED_STATUS_CODE).send(item);
     })
     .catch((err) => {
@@ -39,7 +38,6 @@ const createItem = (req, res) => {
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
         .send({ message: "An error has occurred on the server" });
     });
-  console.log(name, weather, imageUrl);
 };
 
 // DELETE /items/:itemId deletes an item by _id
@@ -63,7 +61,6 @@ const deleteItem = (req, res) => {
 
       //  delete item if owner and userId match
       return ClothingItem.findByIdAndDelete(itemId).then((deletedItem) => {
-        console.log("Item Deleted");
         return res.send(deletedItem);
       });
     })
