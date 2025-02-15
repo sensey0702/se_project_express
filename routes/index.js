@@ -6,9 +6,13 @@ const { createUser, login } = require("../controllers/users");
 const { getItems } = require("../controllers/clothingItems");
 
 const { NOT_FOUND_STATUS_CODE } = require("../utils/errors");
+const {
+  validateUserLogin,
+  validateUserInfo,
+} = require("../middlewares/validation");
 
-router.post("/signin", login);
-router.post("/signup", createUser);
+router.post("/signin", validateUserLogin, login);
+router.post("/signup", validateUserInfo, createUser);
 router.get("/items", getItems);
 
 router.use(auth);
