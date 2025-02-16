@@ -26,6 +26,10 @@ const validateCreateItem = celebrate({
       "string.empty": "Image URL is required",
       "string.uri": "Image URL must be valid",
     }),
+    weather: Joi.string().required().valid("hot", "warm", "cold").messages({
+      "string.empty": "Weather is required",
+      "any.only": 'Weather must be one of ["hot", "warm", "cold"]',
+    }),
   }),
 });
 
@@ -64,11 +68,11 @@ const validateUserLogin = celebrate({
 
 const validateId = celebrate({
   params: Joi.object().keys({
-    _id: Joi.string().alphanum().length(24).required().messages({
-      "string.base": "_id must be a string",
-      "string.empty": "_id is required",
-      "string.length": "_id must be 24 characters long",
-      "string.alphanum": "_id must be a hexadecimal value",
+    itemId: Joi.string().alphanum().length(24).required().messages({
+      "string.base": "Item ID must be a string",
+      "string.empty": "Item ID required",
+      "string.length": "Item ID must be 24 characters long",
+      "string.alphanum": "Item ID must be a hexadecimal value",
     }),
   }),
 });
