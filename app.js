@@ -4,6 +4,7 @@ const cors = require("cors");
 const mainRouter = require("./routes/index");
 const errorHandler = require("./middlewares/error-handler");
 const { errors } = require("celebrate");
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 const { PORT = 3001 } = process.env;
 const app = express();
 
@@ -17,7 +18,11 @@ mongoose
 app.use(cors());
 app.use(express.json());
 
+app.use(requestLogger);
+
 app.use("/", mainRouter);
+
+app.use(errorLogger);
 
 // celebrate error handler
 app.use(errors());
