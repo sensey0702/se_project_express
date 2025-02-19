@@ -25,6 +25,7 @@ const createItem = (req, res, next) => {
           new BadRequestError("The server does not understand this request")
         );
       } else {
+        console.error(err);
         next(err);
       }
     });
