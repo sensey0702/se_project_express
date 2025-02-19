@@ -2,9 +2,9 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 const UnauthorizedError = require("../errors/UnauthorizedError");
 
-const handleAuthError = () => {
-  throw new UnauthorizedError("Authorization Required");
-};
+// const handleAuthError = () => {
+//   throw new UnauthorizedError("Authorization Required");
+// };
 
 const auth = (req, res, next) => {
   console.log("Auth middleware called");
@@ -13,7 +13,7 @@ const auth = (req, res, next) => {
   if (!authorization || !authorization.startsWith("Bearer ")) {
     // check if the header exists and starts with 'Bearer '
     console.log("Auth header missing or incorrect");
-    return handleAuthError();
+    throw new UnauthorizedError("Authorizaion Required");
   }
   const token = authorization.replace("Bearer ", "");
   let payload;
@@ -22,7 +22,7 @@ const auth = (req, res, next) => {
     payload = jwt.verify(token, JWT_SECRET);
     console.log("Token verified payload:", payload);
   } catch (err) {
-    return handleAuthError();
+    return next(new UnauthorizedError("Authorization Required"));
   }
 
   req.user = payload; // adding the payload to the Request object
