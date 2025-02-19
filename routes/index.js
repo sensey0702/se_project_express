@@ -16,6 +16,7 @@ router.post("/signup", validateUserInfo, createUser);
 router.get("/items", getItems);
 
 router.use(auth);
+console.log("auth should be set now!");
 
 router.use("/users", userRouter);
 router.use("/items", clothingItemRouter);
