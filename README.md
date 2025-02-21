@@ -1,6 +1,10 @@
 # WTWR (What to Wear?): Back End
 
-This back-end project contains the backend implementation of a server with a RESTful API for the WTWR application. The project is built using Node.js, Express, and MongoDB, and is configured with ESLint for code linting. It is designed to eventually support user authorization.
+This back-end project contains the backend implementation of a server with a RESTful API for the WTWR application. The project is built using Node.js, Express, and MongoDB, and is configured with ESLint for code linting. It is designed to support user authorization. It is deployed using Ubuntu, Google Cloud VM, and PM2.
+
+## Link
+
+https://wtwr.nard.ca
 
 ## Features
 
@@ -12,6 +16,10 @@ This back-end project contains the backend implementation of a server with a RES
 
 - Linting with ESLint to ensure code quality.
 
+- Ubuntu with Google Cloud VM for a cloud based server.
+
+- PM2 to always keep the application running.
+
 ## Technologies Used
 
 - Node.js: Server-side JavaScript runtime.
@@ -22,7 +30,13 @@ This back-end project contains the backend implementation of a server with a RES
 
 - ESLint: Linter for identifying and fixing problematic patterns in code.
 
-## Running the Project
+- Google Cloud VM
+
+- Ubuntu
+
+- PM2
+
+## Running the Project locally
 
 `git clone https://github.com/sensey0702/se_project_express.git`
 
@@ -36,7 +50,7 @@ This back-end project contains the backend implementation of a server with a RES
 
 ### Base URL
 
-http://localhost:3001
+http://localhost:3001 for running locally
 
 ### Endpoints
 
@@ -65,6 +79,4 @@ http://localhost:3001
 
 ## Things to add in the future
 
-- User Authentication and Authorization
-
-- Deployment
+- Adding your own images that do not have a url

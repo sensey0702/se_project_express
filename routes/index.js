@@ -11,6 +11,13 @@ const {
   validateUserInfo,
 } = require("../middlewares/validation");
 
+// crash test - remove after code review
+router.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
+
 router.post("/signin", validateUserLogin, login);
 router.post("/signup", validateUserInfo, createUser);
 router.get("/items", getItems);
