@@ -2,7 +2,7 @@ const ClothingItem = require("../models/clothingItem");
 const { SUCCESS_CREATED_STATUS_CODE } = require("../utils/errors");
 const BadRequestError = require("../errors/BadRequestError");
 const NotFoundError = require("../errors/NotFoundError");
-const UnauthorizedError = require("../errors/UnauthorizedError");
+const ForbiddenError = require("../errors/ForbiddenError");
 
 //  GET /items returns all clothing items
 const getItems = (req, res, next) => {
@@ -42,18 +42,17 @@ const deleteItem = (req, res, next) => {
       }
       // check if the owner of the item and the userId match
       if (item.owner.toString() !== _id) {
-        throw new UnauthorizedError(
+        throw new ForbiddenError(
           "You do not have required permission for this action"
         );
       }
 
       //  delete item if owner and userId match
-      return ClothingItem.findByIdAndDelete(itemId).then((deletedItem) => {
-        return res.send(deletedItem);
-      });
+      return ClothingItem.findByIdAndDelete(itemId).then((deletedItem) =>
+        res.send(deletedItem)
+      );
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
         next(
           new BadRequestError("The server does not understand this request")

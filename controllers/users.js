@@ -25,7 +25,6 @@ const createUser = (req, res, next) => {
       })
     )
     .catch((err) => {
-      console.error(err);
       if (err.code === 11000) {
         next(new ConflictError(`${email} is already in use`));
       }
